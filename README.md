@@ -1,4 +1,4 @@
-A lightweight crate for retrieving the unique machine ID without needing root/admin privileges. Uses an OS APIs only, without running new processes!
+A lightweight crate for retrieving the unique machine ID without needing root/admin privileges. Uses OS APIs only and does not spawn new processes!
 
 # IDs sources
 - Windows: the `MachineGuid` value from `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography` ([Identifying Unique Windows Installation](https://learn.microsoft.com/en-us/answers/questions/1489139/identifying-unique-windows-installation))

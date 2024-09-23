@@ -60,7 +60,7 @@ impl MachineId {
         Ok(Self(machine_uuid))
     }
 
-    #[cfg(all(unix, not(target_os = "linux")))]
+    #[cfg(all(unix, not(target_os = "linux"), not(target_os = "macos")))]
     pub fn new() -> Result<Self> {
         let id = unix::host_uuid().or_else(|_| std::fs::read_to_string("/etc/hostid"))?;
         let machine_uuid = Uuid::parse_str(id.trim_end())?;
@@ -111,7 +111,7 @@ impl MachineId {
     }
 }
 
-#[cfg(all(unix, not(target_os = "linux")))]
+#[cfg(all(unix, not(target_os = "linux"), not(target_os = "macos")))]
 mod unix {
     pub fn host_uuid() -> std::io::Result<String> {
         const KERN_HOSTUUID: i32 = 0x24i32;
