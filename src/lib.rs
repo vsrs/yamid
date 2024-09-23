@@ -60,6 +60,13 @@ impl MachineId {
         Ok(Self(machine_uuid))
     }
 
+    #[cfg(all(unix, not(target_os = "linux")))]
+    pub fn new() -> Result<Self> {
+        let id = unix::host_uuid().or_else(|_| std::fs::read_to_string("/etc/hostid"))?;
+        let machine_uuid = Uuid::parse_str(id.trim_end())?;
+        Ok(Self(machine_uuid))
+    }
+
     #[cfg(target_os = "macos")]
     pub fn new() -> Result<Self> {
         use apple_sys::IOKit as io;
@@ -101,6 +108,57 @@ impl MachineId {
         };
 
         Ok(Self(uuid::Uuid::parse_str(&uuid_str)?))
+    }
+}
+
+#[cfg(all(unix, not(target_os = "linux")))]
+mod unix {
+    pub fn host_uuid() -> std::io::Result<String> {
+        const KERN_HOSTUUID: i32 = 0x24i32;
+        let vec = sysctl([libc::CTL_KERN, KERN_HOSTUUID])?;
+
+        Ok(vec
+            .into_iter()
+            .take_while(|ch| *ch != 0)
+            .map(|ch| ch as char)
+            .collect::<String>())
+    }
+
+    pub fn sysctl<const N: usize>(mib: [i32; N]) -> std::io::Result<Vec<u8>> {
+        use std::ptr;
+        let (mut m, mut n) = (mib, 0);
+        let r = unsafe {
+            libc::sysctl(
+                m.as_mut_ptr() as _,
+                m.len() as _,
+                ptr::null_mut(),
+                &mut n,
+                ptr::null_mut(),
+                0,
+            )
+        };
+
+        if r != 0 {
+            return Err(std::io::Error::from_raw_os_error(r));
+        }
+        let mut b = Vec::with_capacity(n);
+        let s = unsafe {
+            let res = libc::sysctl(
+                m.as_mut_ptr() as _,
+                m.len() as _,
+                b.as_mut_ptr() as _,
+                &mut n,
+                ptr::null_mut(),
+                0,
+            );
+            b.set_len(n);
+            res
+        };
+        if s != 0 {
+            Err(std::io::Error::from_raw_os_error(s))
+        } else {
+            Ok(b)
+        }
     }
 }
 

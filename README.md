@@ -4,10 +4,11 @@ A lightweight crate for retrieving the unique machine ID without needing root/ad
 - Windows: the `MachineGuid` value from `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography` ([Identifying Unique Windows Installation](https://learn.microsoft.com/en-us/answers/questions/1489139/identifying-unique-windows-installation))
 - Linux: `/etc/machine-id` with a fallback to `/var/lib/dbus/machine-id` ([man page](https://man7.org/linux/man-pages/man5/machine-id.5.html))
 - macOS: `IOPlatformUUID`
+- FreeBSD: `CTL_KERN` : `KERN_HOSTUUID` [sysctl(3)](https://man.freebsd.org/cgi/man.cgi?sysctl(3)) with a fallback to `/etc/hostid`
+- Other Unix: like FreeBSD, requires testing!
 - Not yet implemented:
   - iOS
   - Android
-  - BSD
 
 # Security Considerations
 A machine ID uniquely identifies the host and should be treated as confidential, avoiding exposure in untrusted environments.
