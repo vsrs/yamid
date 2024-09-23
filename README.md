@@ -10,8 +10,11 @@ A lightweight crate for retrieving the unique machine ID without needing root/ad
 
 # Security Considerations
 A machine ID uniquely identifies the host and should be treated as confidential, avoiding exposure in untrusted environments.
-If your application requires a stable unique identifier, avoid using the machine ID directly.
-Instead, hash the machine ID securely with a fixed, application-specific salt.
+If your application requires a stable unique identifier, avoid using the machine as it is.
+Instead, hash the machine ID securely with a fixed, application-specific [salt](https://en.wikipedia.org/wiki/Salt_(cryptography)).
+
+> [!WARNING]  
+> Hashing IDs is not only a best practice today, if you store the ID somewhere (like your remote server), you actually must do it by law according to [GDPR (see identifiers)](https://gdpr.eu/eu-gdpr-personal-data/) and similar regulations.
 
 > [!TIP]  
 > Virtual machines deployed from the same template often share the same machine ID. To differentiate them, include the MAC address when hashing.
