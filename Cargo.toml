@@ -1,0 +1,18 @@
+[package]
+name = "yamid"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+thiserror = "1.0"
+uuid = { version = "1.5" }
+serde = { version = "1.0", optional = true, features = ["serde_derive"] }
+
+[target.'cfg(windows)'.dependencies]
+winreg = "0.52"
+
+[features]
+serde = ["dep:serde", "uuid/serde"]
+
+[dev-dependencies]
+serde_json = "1.0"
