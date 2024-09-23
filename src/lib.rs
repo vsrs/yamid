@@ -40,8 +40,15 @@ impl MachineId {
     pub fn new() -> Result<Self> {
         use std::fs::read_to_string;
 
-        let guid_str = read_to_string("/var/lib/dbus/machine-id")
-            .or_else(|_| read_to_string("/etc/machine-id"))?;
+        let guid_str = read_to_string("/etc/machine-id")
+            .and_then(|data| {
+                if data.is_empty() {
+                    Err(std::io::Error::new(std::io::ErrorKind::InvalidData, ""))
+                } else {
+                    Ok(data)
+                }
+            })
+            .or_else(|_| read_to_string("/var/lib/dbus/machine-id"))?;
         let machine_uuid = Uuid::parse_str(guid_str.trim_end())?;
 
         Ok(Self(machine_uuid))
