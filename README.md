@@ -1,12 +1,13 @@
-A lightweight crate for retrieving the unique machine ID without needing root/admin privileges.
+A lightweight crate for retrieving the unique machine ID without needing root/admin privileges. Uses an OS APIs only, without running new processes!
 
 # IDs sources
 - Windows: the `MachineGuid` value from `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography` ([Identifying Unique Windows Installation](https://learn.microsoft.com/en-us/answers/questions/1489139/identifying-unique-windows-installation))
 - Linux: `/etc/machine-id` with a fallback to `/var/lib/dbus/machine-id` ([man page](https://man7.org/linux/man-pages/man5/machine-id.5.html))
----
-- BSD /etc/hostid and smbios.system.uuid as a fallback
-- macOS and OSX `IOPlatformExpertDevice`?
-- Android
+- macOS: `IOPlatformUUID`
+- Not yet implemented:
+  - iOS
+  - Android
+  - BSD
 
 # Security Considerations
 A machine ID uniquely identifies the host and should be treated as confidential, avoiding exposure in untrusted environments.
