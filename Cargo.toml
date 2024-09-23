@@ -2,6 +2,10 @@
 name = "yamid"
 version = "0.1.0"
 edition = "2021"
+authors = ["Vit <vit@conrlab.com>"]
+repository = "https://github.com/vsrs/yamid"
+description = "Yet Another Machine ID"
+license = "Apache-2.0"
 
 [dependencies]
 thiserror = "1.0"
