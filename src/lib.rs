@@ -28,6 +28,13 @@ impl AsRef<[u8]> for MachineId {
     }
 }
 
+impl From<MachineId> for Uuid {
+    #[inline]
+    fn from(machine_id: MachineId) -> Self {
+        machine_id.0
+    }
+}
+
 impl MachineId {
     #[cfg(windows)]
     pub fn new() -> Result<Self> {
@@ -174,6 +181,15 @@ mod tests {
         println!("Machine id: {first}");
 
         assert_eq!(first, second);
+    }
+
+    #[test]
+    fn test_into_uuid() {
+        let machine_id = MachineId::new().unwrap();
+        let expected_uuid: Uuid = *machine_id.as_ref();
+        let uuid: Uuid = machine_id.into();
+
+        assert_eq!(expected_uuid, uuid);
     }
 
     #[cfg(feature = "serde")]
